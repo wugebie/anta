@@ -1,0 +1,80 @@
+@keyframes rotateY {
+	0%{
+		transform: rotateY(0deg);
+	}
+	100% {
+		transform: rotateY(360deg);
+	}
+}
+@-webkit-keyframes rotateY {
+	0%{
+		-webkit-transform: rotateY(0deg);
+	}
+	100% {
+		-webkit-transform: rotateY(360deg);
+	}
+}
+body,p{
+	margin: 0;
+}
+html,body{
+	height: 100%;
+	overflow: hidden;
+}
+#view{
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	perspective: 300px;
+	-webkit-perspective: 300px;
+}
+.logoImg{
+	width: 30%;
+	position: absolute;
+	left: 35%;
+	top: 35%;
+}
+.logoImg img{
+	width: 100%;
+	vertical-align: top;
+	animation: 2s rotateY linear infinite;
+	-webkit-animation: 2s rotateY linear infinite;
+}
+.logoText{
+	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 46%;
+	text-align: center;
+	font-size: 16px;
+}
+#logo4,
+#logoIcos{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+#logoIcos {
+	-webkit-animation: 2s rotateY linear infinite;
+	animation: 2s rotateY linear infinite;
+}
+#logoIcos span{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	top:50%;
+	left: 50%;
+	margin: -15px 0 0 -15px;
+	background: center center no-repeat;
+	background-size: contain;
+}
+#logo4Img{
+	width: 197px;
+	height: 70px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -35px 0 0 -98.5px;
+}
