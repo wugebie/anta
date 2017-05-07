@@ -1,5 +1,6 @@
 (function() {
-  setLoding()
+  //setLoding()
+  anmt5();
   setPerc();
 })();
 //阻止默认行为
@@ -79,7 +80,7 @@ function anmt() {
 				el: logo2,
 				target: {translateZ:0},
 				time: 500,
-				type: "easeIn",
+				type: "easeBoth",
 				callBack: anmt2
 			});
     }
@@ -103,12 +104,12 @@ function anmt2(){
   				el: logo3,
   				target: {translateZ:0},
   				time: 500,
-  				type: "easeIn",
+  				type: "easeBoth",
   				callBack:anmt3
   			});
       }
     })
-  },2000)
+  },1500)
 }
 /* 隐藏logo3，显示小的爆炸效果 */
 function anmt3(){
@@ -126,7 +127,7 @@ function anmt3(){
   			anmt4();//爆炸效果
       }
     })
-  },2000)
+  },1500)
 }
 /* logo4的生成*/
 function anmt4(){
@@ -173,7 +174,7 @@ function anmt4(){
 						anmt5();
 					}
 				});
-			},500);
+			},300);
 		}
   })
 }
@@ -271,7 +272,7 @@ function anmt7(){
       setDarg();
       setTimeout(function(){
           setSensors();
-      },300)
+      },500)
     }
   })
 }
@@ -283,7 +284,7 @@ function setDarg(){
   var startPoint = {x:0,y:0};
   var startDeg = {x:0,y:0};
   var nowPoint = {x:0,y:0};
-  var scale = {x:20*129/360,y:1170/80};//拖拽时拖拽距离和角度的比例
+  var scale = {x:20*129/360,y:1170/40};//拖拽时拖拽距离和角度的比例
   var disDeg = {x:0,y:0};
   var dis = {x:0,y:0};
   var startZ = css(tZ,'translateZ');//拖拽时开始的z轴距离
@@ -505,19 +506,18 @@ function createPano(){
 
 
 /*添加手机旋转角度变化事件*/
+
 function setSensors(){
   var panoBg = document.querySelector('#panoBg');
   var pano = document.querySelector('#pano');
   var tZ = document.querySelector('#panoBg-translateZ');
-  var last = {x:0,y:0,z:0};
+  var last = {x:0,y:0};
   var start = {};
   var now  = {};
   var startEl = {};
   var lastTime = Date.now();
   var scale = 129/18;
   var startZ = -160;
-  var num = 0;
-  var lastZ = null;
   window.isTouch = false;//陀螺仪开关，当touchstart的时候关闭，
   window.isStart = false;//当每次陀螺仪打开的时候，让陀螺仪从新获取角度；
   var dir = window.orientation; //检测横竖屏
@@ -530,44 +530,25 @@ function setSensors(){
     if (window.isTouch) {
       return;
     }
-    var beta = Math.round(e.beta);
-    var gamma = Math.round(e.gamma);
-    var alpha = Math.round(e.alpha);
     switch(dir){
 			case 0:
-				var x = beta;
-				var y = gamma;
-        var z = alpha;
-				break;
-      case 180:
-				var x = -beta;
-				var y = -gamma;
-        var z = alpha;
+				var x = e.beta;
+				var y = e.gamma;
 				break;
 			case 90:
-				var x = gamma;
-				var y = beta;
-        var z = alpha;
+				var x = e.gamma;
+				var y = e.beta;
 				break;
 			case -90:
-				var x = -gamma;
-				var y = -beta;
-        var z = alpha;
+				var x = -e.gamma;
+				var y = -e.beta;
+				break;
+			case 180:
+				var x = -e.beta;
+				var y = -e.gamma;
 				break;
 		}
-		
-    if (lastZ >= 358 && z <= 2){
-      num++;
-    }
-    if (lastZ <= 2 && z >= 358){
-      num--;
-    }
-    lastZ = z;
-    z = z+360*num;
-    
-    
     var nowTime = Date.now();
-    
     /*deviceorientation执行的间隔 有可能小于20ms，MTween动画封装
     的setInterval执行间隔是20ms，这样的话，上个还没有执行，
     下一个就把上一个清除了*/
@@ -575,36 +556,30 @@ function setSensors(){
       return;
     }
     lastTime = nowTime;
-    
-    if(!isStart){
+    if(!window.isStart){
       //start
       window.isStart = true;
       start.x = x;
       start.y = y;
-      start.z = z;
       startEl.x = css(panoBg,'rotateX');
       startEl.y = css(panoBg,'rotateY');
     }else{
       //move
       now.x = x;
       now.y = y;
-      now.z = z;
       var dis = {};
       dis.x = now.x - start.x;
       dis.y = now.y - start.y;
-      dis.z = now.z - start.z;
       var deg = {};
       deg.x = startEl.x + dis.x;
       deg.y = startEl.y + dis.y;
-      deg.z = dis.z;
       if(deg.x>45){
         deg.x=45
       }else if(deg.x<-45){
         deg.x=-45
       }
-      var rotY = deg.y - deg.z;
       var disXZ =Math.abs(Math.round(deg.x - css(panoBg,'rotateX')) * scale);
-      var disYZ =Math.abs(Math.round(rotY - css(panoBg,'rotateY')) * scale);
+      var disYZ =Math.abs(Math.round(deg.y - css(panoBg,'rotateY')) * scale);
       var disZ = Math.max(disXZ,disYZ);
       if (disZ>300) {
         disZ = 300;
@@ -612,27 +587,27 @@ function setSensors(){
       MTween({
         el:tZ,
         target:{translateZ:startZ - disZ},
-        time:120,
+        time:200,
         type:'easeOut',
         callBack:function(){
           MTween({
             el:tZ,
             target:{translateZ:startZ},
-            time:120,
+            time:200,
             type:'easeOut'
           });
         }
       });
       MTween({
         el:pano,
-        target:{rotateX:deg.x,rotateY:rotY},
-        time:240,
+        target:{rotateX:deg.x,rotateY:deg.y},
+        time:200,
         type:'easeOut'
       });
       MTween({
         el:panoBg,
-        target:{rotateX:deg.x,rotateY:rotY},
-        time:280,
+        target:{rotateX:deg.x,rotateY:deg.y},
+        time:300,
         type:'easeOut'
       });
       
