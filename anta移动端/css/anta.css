@@ -91,7 +91,9 @@ html,body{
 #main,
 #panoBg,
 #panoBg-translateZ,
-#cloud{
+#cloud,
+#pano,
+.pano{
 	position: absolute;
 	left: 50%;
 	top: 50%;
@@ -115,4 +117,13 @@ html,body{
 	left: 50%;
 	top: 50%;
 	margin: -50px 0 0 -100px;
+}
+.pano span{
+	width: 129px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -64.5px;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
